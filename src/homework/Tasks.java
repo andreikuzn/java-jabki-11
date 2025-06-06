@@ -20,7 +20,7 @@ public class Tasks {
     // 2. Проверка строки
     public static void validateString(String s) {
         if (s == null || s.trim().isEmpty()) {
-            throw new IllegalArgumentException("Строка пуста или состоит только из пробелов");
+            throw new IllegalArgumentException("Строка пустая или состоит только из пробелов");
         }
     }
 
@@ -31,7 +31,7 @@ public class Tasks {
             try {
                 result.add(Integer.parseInt(s));
             } catch (NumberFormatException e) {
-                System.out.printf("Не удалось преобразовать строку в число: %s\n", s);
+                System.out.printf("Не удалось преобразовать строку %s в число\n", s);
             }
         }
         return result;
@@ -40,8 +40,8 @@ public class Tasks {
     // 4. Простая валидация возраста
     public static void setAge(int age) {
         try {
-            if (age < 0) {
-                throw new IllegalArgumentException("Возраст не может быть меньше нуля");
+            if (age < 1) {
+                throw new IllegalArgumentException("Возраст не может быть меньше единицы");
             }
             System.out.printf("Возраст установлен: %s\n", age);
         } catch (IllegalArgumentException e) {
@@ -51,8 +51,8 @@ public class Tasks {
 
     // 5. Собственное исключение: депозит
     public static void deposit(double amount) throws NegativeDepositException {
-        if (amount < 0) {
-            throw new NegativeDepositException("Депозит не может быть отрицательным");
+        if (amount <= 0) {
+            throw new NegativeDepositException(String.format("Депозит должен быть больше нуля. Попытка внесения %s", amount));
         }
         System.out.printf("Внесено на депозит: %.2f\n", amount);
     }
@@ -60,7 +60,7 @@ public class Tasks {
     // 6. Поиск товара по коду
     private static final Map<String, String> ITEMS = Map.of(
             "123", "Книга",
-            "456", "Мышь",
+            "456", "Тетрадь",
             "789", "Ручка"
     );
     public static String getItem(String code) {
@@ -98,10 +98,14 @@ public class Tasks {
     public static double[] transfer(double fromBalance, double toBalance, double amount)
             throws InvalidTransferAmountException, InsufficientBalanceException {
         if (amount <= 0) {
-            throw new InvalidTransferAmountException("Сумма перевода должна быть положительной");
+            throw new InvalidTransferAmountException(
+                    String.format("Сумма перевода должна быть больше нуля. Попытка перевода %s", amount)
+            );
         }
         if (fromBalance < amount) {
-            throw new InsufficientBalanceException("Недостаточно средств для перевода");
+            throw new InsufficientBalanceException(
+                    String.format("Недостаточно средств для перевода. Попытка перевода %s с баланса %s", amount, fromBalance)
+            );
         }
         fromBalance -= amount;
         toBalance += amount;
@@ -115,7 +119,9 @@ public class Tasks {
 
     public static void rateProduct(int rating) throws InvalidRatingException {
         if (rating < 1 || rating > 5) {
-            throw new InvalidRatingException("Рейтинг должен быть от 1 до 5");
+            throw new InvalidRatingException(
+                    String.format("Рейтинг должен быть от 1 до 5. Попытка выставления рейтинга %s", rating)
+            );
         }
         ratings.add(rating);
         System.out.printf("Рейтинг успешно сохранён: %s\n", rating);
@@ -126,7 +132,7 @@ public class Tasks {
             int rating = Integer.parseInt(ratingStr);
             rateProduct(rating);
         } catch (NumberFormatException e) {
-            System.out.printf("Рейтинг не является числом: %s\n", ratingStr);
+            System.out.printf("Рейтинг %s не является числом\n", ratingStr);
         } catch (InvalidRatingException e) {
             System.out.println(e.getMessage());
         }

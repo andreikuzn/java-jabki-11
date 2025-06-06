@@ -8,7 +8,8 @@ public class Main {
     public static void main(String[] args) {
         // 1. Безопасное деление
         System.out.println("1. Безопасное деление:");
-        Tasks.safeDivide(10, 0);
+        Tasks.safeDivide(1, 0);
+        Tasks.safeDivide(0, 0);
         System.out.printf("10 / 2 = %d%n%n", Tasks.safeDivide(10, 2));
 
         // 2. Проверка строки
@@ -28,19 +29,25 @@ public class Main {
 
         // 3. Преобразование строки в число
         System.out.println("3. Преобразование строки в число:");
-        List<Integer> numbers = Tasks.convertStringToNum(List.of("10", "abc", "5", "7q", "-4"));
+        List<Integer> numbers = Tasks.convertStringToNum(List.of("155", "two", "9", "12q", "-47"));
         System.out.printf("Преобразованные числа: %s%n%n", numbers);
 
         // 4. Простая валидация возраста
         System.out.println("4. Простая валидация возраста:");
-        Tasks.setAge(-10);
+        Tasks.setAge(-1);
+        Tasks.setAge(0);
         Tasks.setAge(25);
         System.out.println();
 
         // 5. Депозит с собственным исключением
         System.out.println("5. Собственное исключение: депозит");
         try {
-            Tasks.deposit(-100);
+            Tasks.deposit(-1);
+        } catch (NegativeDepositException e) {
+            System.out.printf("Ошибка: %s%n", e.getMessage());
+        }
+        try {
+            Tasks.deposit(0);
         } catch (NegativeDepositException e) {
             System.out.printf("Ошибка: %s%n", e.getMessage());
         }
@@ -63,13 +70,13 @@ public class Main {
 
         // 7. Чтение из файла
         System.out.println("7. Чтение из файла:");
-        List<String> lines = Tasks.readFile("nofile.txt"); // несуществующий файл
+        List<String> lines = Tasks.readFile("file.txt");
         System.out.printf("Прочитанные строки: %s%n%n", lines);
 
         // 8. Система логина
         System.out.println("8. Система логина:");
         try {
-            Tasks.login("admin", "wrongpass");
+            Tasks.login("admin", "pass");
         } catch (LoginFailedException e) {
             System.out.printf("Ошибка: %s%n", e.getMessage());
         }
@@ -88,7 +95,17 @@ public class Main {
             double[] res = Tasks.transfer(from, to, 30.0);
             from = res[0];
             to = res[1];
-            Tasks.transfer(from, to, 200.0); // Ошибка - не хватит средств
+            Tasks.transfer(from, to, 200.0);
+        } catch (InvalidTransferAmountException | InsufficientBalanceException e) {
+            System.out.printf("Ошибка: %s%n", e.getMessage());
+        }
+        try {
+            Tasks.transfer(from, to, 0.0);
+        } catch (InvalidTransferAmountException | InsufficientBalanceException e) {
+            System.out.printf("Ошибка: %s%n", e.getMessage());
+        }
+        try {
+            Tasks.transfer(from, to, -1.0);
         } catch (InvalidTransferAmountException | InsufficientBalanceException e) {
             System.out.printf("Ошибка: %s%n", e.getMessage());
         }
@@ -100,6 +117,7 @@ public class Main {
         Tasks.rateProduct("5");
         Tasks.rateProduct("abc");
         Tasks.rateProduct("7");
+        Tasks.rateProduct("0");
         try {
             Tasks.rateProduct(3);
         } catch (InvalidRatingException e) {
