@@ -40,8 +40,8 @@ public class Tasks {
     // 4. Простая валидация возраста
     public static void setAge(int age) {
         try {
-            if (age < 1) {
-                throw new IllegalArgumentException("Возраст не может быть меньше единицы");
+            if (age < 0) {
+                throw new IllegalArgumentException("Возраст не может быть меньше нуля");
             }
             System.out.printf("Возраст установлен: %s\n", age);
         } catch (IllegalArgumentException e) {
