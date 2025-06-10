@@ -2,11 +2,24 @@ package homework;
 
 import homework.exceptions.*;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.*;
 
 
 public class Tasks {
+
+    private Tasks() {
+        throw new AssertionError("Создание экземпляров - запрещено!");
+    }
+
+    private static final Map<String, String> ITEMS = Map.of(
+            "123", "Книга",
+            "456", "Тетрадь",
+            "789", "Ручка"
+    );
+
     // 1. Безопасное деление
     public static Integer safeDivide(int a, int b) {
         try {
@@ -31,41 +44,32 @@ public class Tasks {
             try {
                 result.add(Integer.parseInt(s));
             } catch (NumberFormatException e) {
-                System.out.printf("Не удалось преобразовать строку %s в число\n", s);
+                System.out.printf("Не удалось преобразовать строку %s в число%n", s);
             }
         }
         return result;
     }
 
     // 4. Простая валидация возраста
-    public static void setAge(int age) {
-        try {
-            if (age < 0) {
-                throw new IllegalArgumentException("Возраст не может быть меньше нуля");
-            }
-            System.out.printf("Возраст установлен: %s\n", age);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+    public static String setAge(int age) {
+        if (age < 0) {
+            throw new IllegalArgumentException("Возраст не может быть меньше нуля");
         }
+        return String.format("Возраст установлен: %d", age);
     }
 
     // 5. Собственное исключение: депозит
-    public static void deposit(double amount) throws NegativeDepositException {
+    public static String deposit(double amount) throws NegativeDepositException {
         if (amount <= 0) {
-            throw new NegativeDepositException(String.format("Депозит должен быть больше нуля. Попытка внесения %s", amount));
+            throw new NegativeDepositException(amount);
         }
-        System.out.printf("Внесено на депозит: %.2f\n", amount);
+        return String.format("Внесено на депозит: %.2f", amount);
     }
 
     // 6. Поиск товара по коду
-    private static final Map<String, String> ITEMS = Map.of(
-            "123", "Книга",
-            "456", "Тетрадь",
-            "789", "Ручка"
-    );
     public static String getItem(String code) {
         if (!ITEMS.containsKey(code)) {
-            throw new ItemNotFoundException(String.format("Товар с кодом %s не найден\n", code));
+            throw new ItemNotFoundException(code);
         }
         return ITEMS.get(code);
     }
@@ -79,33 +83,29 @@ public class Tasks {
                 lines.add(line);
             }
         } catch (IOException e) {
-            System.out.printf("Ошибка чтения файла: %s\n", e.getMessage());
+            System.out.printf("Ошибка чтения файла: %s%n", e.getMessage());
         }
         return lines;
     }
 
     // 8. Система логина
-    public static void login(String username, String password) throws LoginFailedException {
+    public static String login(String username, String password) throws LoginFailedException {
         String correctUser = "admin";
         String correctPass = "1234";
         if (!correctUser.equals(username) || !correctPass.equals(password)) {
-            throw new LoginFailedException("Логин или пароль неверны");
+            throw new LoginFailedException();
         }
-        System.out.printf("Добро пожаловать, %s!\n", username);
+        return String.format("Добро пожаловать, %s!", username);
     }
 
     // 9. Банковский перевод с валидацией
     public static double[] transfer(double fromBalance, double toBalance, double amount)
             throws InvalidTransferAmountException, InsufficientBalanceException {
         if (amount <= 0) {
-            throw new InvalidTransferAmountException(
-                    String.format("Сумма перевода должна быть больше нуля. Попытка перевода %s", amount)
-            );
+            throw new InvalidTransferAmountException(amount);
         }
         if (fromBalance < amount) {
-            throw new InsufficientBalanceException(
-                    String.format("Недостаточно средств для перевода. Попытка перевода %s с баланса %s", amount, fromBalance)
-            );
+            throw new InsufficientBalanceException(amount, fromBalance);
         }
         fromBalance -= amount;
         toBalance += amount;
@@ -117,24 +117,22 @@ public class Tasks {
     // 10. Сервис оценки товара
     private static final List<Integer> ratings = new ArrayList<>();
 
-    public static void rateProduct(int rating) throws InvalidRatingException {
+    public static String rateProduct(int rating) throws InvalidRatingException {
         if (rating < 1 || rating > 5) {
-            throw new InvalidRatingException(
-                    String.format("Рейтинг должен быть от 1 до 5. Попытка выставления рейтинга %s", rating)
-            );
+            throw new InvalidRatingException(rating);
         }
         ratings.add(rating);
-        System.out.printf("Рейтинг успешно сохранён: %s\n", rating);
+        return String.format("Рейтинг успешно сохранён: %d", rating);
     }
 
-    public static void rateProduct(String ratingStr) {
+    public static String rateProduct(String ratingStr) {
         try {
             int rating = Integer.parseInt(ratingStr);
-            rateProduct(rating);
+            return rateProduct(rating);
         } catch (NumberFormatException e) {
-            System.out.printf("Рейтинг %s не является числом\n", ratingStr);
+            return String.format("Рейтинг %s не является числом", ratingStr);
         } catch (InvalidRatingException e) {
-            System.out.println(e.getMessage());
+            return e.getMessage();
         }
     }
 }

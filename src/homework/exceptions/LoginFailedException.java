@@ -1,7 +1,7 @@
 package homework.exceptions;
 
 public class LoginFailedException extends Exception {
-    public LoginFailedException(String message) {
-        super(message);
+    public LoginFailedException() {
+        super("Логин или пароль неверны");
     }
 }

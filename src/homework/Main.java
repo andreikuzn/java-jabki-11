@@ -34,9 +34,13 @@ public class Main {
 
         // 4. Простая валидация возраста
         System.out.println("4. Простая валидация возраста:");
-        Tasks.setAge(-1);
         Tasks.setAge(0);
         Tasks.setAge(25);
+        try {
+            System.out.println(Tasks.setAge(-1));
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
         System.out.println();
 
         // 5. Депозит с собственным исключением
@@ -114,12 +118,13 @@ public class Main {
 
         // 10. Сервис оценки товара
         System.out.println("10. Сервис оценки товара:");
-        Tasks.rateProduct("5");
-        Tasks.rateProduct("abc");
-        Tasks.rateProduct("7");
-        Tasks.rateProduct("0");
+        System.out.println(Tasks.rateProduct("5"));
+        System.out.println(Tasks.rateProduct("abc"));
+        System.out.println(Tasks.rateProduct("7"));
+        System.out.println(Tasks.rateProduct("0"));
         try {
-            Tasks.rateProduct(3);
+            System.out.println(Tasks.rateProduct(3));
+            System.out.println(Tasks.rateProduct(6));
         } catch (InvalidRatingException e) {
             System.out.printf("Ошибка: %s%n", e.getMessage());
         }
